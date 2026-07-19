@@ -3,208 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Visual FX Gallery | 頂級視覺特效聖典</title>
+    <title>CSS Visual FX Lab | 50 高階視覺特效聖典</title>
     <style>
-        /* --- 基礎變數與重設 --- */
+        /* --- 系統主框架基礎樣式 --- */
         :root {
-            --bg-color: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
+            --bg-color: #050508;
+            --card-bg: rgba(255, 255, 255, 0.02);
+            --card-border: rgba(255, 255, 255, 0.06);
             --text-primary: #f3f4f6;
-            --text-secondary: #9ca3af;
+            --text-secondary: #8e95a5;
             --glow-color: #00f2fe;
-            --glow-secondary: #4facfe;
+            --glow-secondary: #ff007f;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             padding: 4rem 2rem;
-        }
-
-        /* --- 標題區 (特效 1: 霓虹微光文字) --- */
-        header {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
-
-        header h1 {
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #fff 0%, var(--glow-color) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
-            margin-bottom: 1rem;
-        }
-
-        header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-
-        /* --- 特效展示網格 --- */
-        .gallery-grid {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 2.5rem;
-        }
-
-        /* --- 基礎卡片外框 (通用外殼) --- */
-        .fx-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            min-height: 380px;
-            position: relative;
-            transition: transform 0.3s ease, border-color 0.3s ease;
         }
 
+        header { text-align: center; margin-bottom: 5rem; max-width: 800px; }
+        header h1 {
+            font-size: 3rem; font-weight: 900; letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff 0%, var(--glow-color) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 242, 254, 0.2); margin-bottom: 1rem;
+        }
+        header p { color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; }
+
+        /* --- 網格展示佈局 --- */
+        .gallery-grid {
+            max-width: 1440px; width: 100%;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        /* --- 通用展示卡片框 --- */
+        .fx-card {
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 16px; padding: 1.8rem; min-height: 340px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
         .fx-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 242, 254, 0.4);
+            transform: translateY(-5px); border-color: rgba(0, 242, 254, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 242, 254, 0.05);
         }
 
-        /* 互動實驗區 */
         .fx-stage {
-            flex-grow: 1;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
+            flex-grow: 1; width: 100%; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; position: relative;
+        }
+        .fx-info { width: 100%; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 1rem; }
+        .fx-info h3 { font-size: 1.1rem; margin-bottom: 0.3rem; color: #fff; font-weight: 700; }
+        .fx-info p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4; }
+
+        /* ==========================================================================
+           50 特效核心 CSS 核心代碼庫
+           ========================================================================== */
+
+        /* 01. 賽博朋克霓虹流光 */
+        .btn-01 { padding: 12px 30px; border: none; background: #00f2fe; color: #000; font-weight: bold; border-radius: 8px; cursor: pointer; position: relative; transition: all 0.3s; }
+        .btn-01::after { content: ''; position: absolute; inset: 0; background: #00f2fe; filter: blur(15px); opacity: 0; transition: opacity 0.3s; z-index: -1; border-radius: 8px; }
+        .btn-01:hover { transform: scale(1.05); } .btn-01:hover::after { opacity: 0.8; }
+
+        /* 02. Q彈果凍形變 */
+        .btn-02 { padding: 12px 30px; border: none; background: #ff007f; color: #fff; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .btn-02:hover { animation: jelly 0.6s ease; }
+        @keyframes jelly {
+            0% { transform: scale(1); }
+            30% { transform: scaleX(1.25) scaleY(0.75); } 40% { transform: scaleX(0.75) scaleY(1.25); }
+            50% { transform: scaleX(1.15) scaleY(0.85); } 65% { transform: scaleX(0.95) scaleY(1.05); }
+            75% { transform: scaleX(1.05) scaleY(0.95); } 100% { transform: scale(1); }
         }
 
-        /* 卡片文字說明 */
-        .fx-info {
-            width: 100%;
-            text-align: left;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 1rem;
+        /* 03. 邊框錐形漸層旋轉 */
+        .box-03 { width: 140px; height: 50px; background: #050508; border-radius: 8px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .box-03::before { content: ''; position: absolute; width: 200%; height: 200%; background: conic-gradient(#00f2fe, #ff007f, #00f2fe); animation: rotate03 3s linear infinite; }
+        .box-03 span { position: absolute; inset: 2px; background: #050508; border-radius: 6px; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: bold; z-index: 1; }
+        @keyframes rotate03 { 100% { transform: rotate(360deg); } }
+
+        /* 04. 懸停填滿光芒 */
+        .btn-04 { padding: 12px 30px; border: 2px solid #00f2fe; background: transparent; color: #00f2fe; font-weight: bold; border-radius: 8px; cursor: pointer; position: relative; overflow: hidden; z-index: 1; transition: color 0.3s; }
+        .btn-04::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: #00f2fe; transition: all 0.4s; z-index: -1; }
+        .btn-04:hover { color: #000; } .btn-04:hover::before { left: 0; }
+
+        /* 05. 3D 壓下回饋 */
+        .btn-05 { padding: 12px 30px; border: none; background: #3b82f6; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 6px #1d4ed8; transition: all 0.1s; }
+        .btn-05:active { box-shadow: 0 0 #1d4ed8; transform: translateY(6px); }
+
+        /* 06. 新擬物化凹陷 */
+        .box-06 { width: 80px; height: 80px; background: #2a2b36; border-radius: 20px; box-shadow: 5px 5px 15px #15161c, -5px -5px 15px #3f4050; transition: box-shadow 0.3s; cursor: pointer; }
+        .box-06:hover { box-shadow: inset 5px 5px 15px #15161c, inset -5px -5px 15px #3f4050; }
+
+        /* 07. 膠捲劃過高光 */
+        .btn-07 { padding: 12px 30px; border: none; background: #111; color: #fff; font-weight: bold; border-radius: 8px; cursor: pointer; position: relative; overflow: hidden; }
+        .btn-07::after { content: ''; position: absolute; top: -50%; left: -60%; width: 30%; height: 200%; background: rgba(255,255,255,0.25); transform: rotate(30deg); }
+        .btn-07:hover::after { left: 140%; transition: all 0.6s ease-in-out; }
+
+        /* 08. 懸停雙向劃開 */
+        .btn-08 { padding: 12px 30px; border: 2px solid #fff; background: transparent; color: #fff; font-weight: bold; position: relative; cursor: pointer; z-index: 1; }
+        .btn-08::before, .btn-08::after { content: ''; position: absolute; width: 50%; height: 100%; background: #fff; top: 0; transition: all 0.3s ease; z-index: -1; opacity: 0; }
+        .btn-08::before { left: 0; transform: translateX(-100%); } .btn-08::after { right: 0; transform: translateX(100%); }
+        .btn-08:hover { color: #000; } .btn-08:hover::before { transform: translateX(0); opacity: 1; } .btn-08:hover::after { transform: translateX(0); opacity: 1; }
+
+        /* 09. 懸停邊框展開 */
+        .btn-09 { padding: 12px 30px; background: transparent; color: #fff; border: none; font-weight: bold; cursor: pointer; position: relative; }
+        .btn-09::before, .btn-09::after { content: ''; position: absolute; width: 0; height: 0; border: 2px solid transparent; transition: all 0.3s ease; }
+        .btn-09::before { top: 0; left: 0; } .btn-09::after { bottom: 0; right: 0; }
+        .btn-09:hover::before { width: 100%; height: 100%; border-top-color: #00f2fe; border-right-color: #00f2fe; }
+        .btn-09:hover::after { width: 100%; height: 100%; border-bottom-color: #00f2fe; border-left-color: #00f2fe; }
+
+        /* 10. 聲波脈衝圈 */
+        .circle-10 { width: 40px; height: 40px; background: #00f2fe; border-radius: 50%; position: relative; }
+        .circle-10::before { content: ''; position: absolute; inset: 0; border-radius: 50%; background: #00f2fe; animation: pulse10 1.5s infinite ease-out; z-index: -1; }
+        @keyframes pulse10 { 100% { transform: scale(2.8); opacity: 0; } }
+
+        /* 11. 磁吸感內縮放 */
+        .btn-11 { padding: 12px 30px; border: none; background: #a855f7; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; transition: transform 0.2s; }
+        .btn-11:hover { transform: scale(0.9); }
+
+        /* 12. 滑鼠懸浮點擊微顫抖 */
+        .btn-12 { padding: 12px 30px; border: none; background: #ef4444; color: white; font-weight: bold; border-radius: 8px; cursor: pointer; }
+        .btn-12:hover { animation: wobble12 0.5s ease; }
+        @keyframes wobble12 {
+            0%, 100% { transform: translateX(0); } 20% { transform: translateX(-6px) rotate(-3deg); }
+            40% { transform: translateX(5px) rotate(3deg); } 60% { transform: translateX(-4px) rotate(-2deg); }
+            80% { transform: translateX(2px) rotate(1deg); }
         }
 
-        .fx-info h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.3rem;
-            color: #fff;
+        /* 13. 多層陰影堆疊 */
+        .btn-13 { padding: 12px 30px; border: 2px solid #fff; background: #050508; color: #fff; font-weight: bold; cursor: pointer; transition: box-shadow 0.3s, transform 0.3s; }
+        .btn-13:hover { transform: translate(-4px, -4px); box-shadow: 4px 4px 0 #ff007f, 8px 8px 0 #00f2fe; }
+
+        /* 14. 3D 卡片翻轉回饋 */
+        .card-14 { width: 140px; height: 90px; perspective: 1000px; }
+        .inner-14 { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
+        .card-14:hover .inner-14 { transform: rotateY(180deg); }
+        .front-14, .back-14 { position: absolute; inset: 0; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; font-weight: bold; border-radius: 8px; }
+        .front-14 { background: #222; color: white; border: 1px solid rgba(255,255,255,0.1); }
+        .back-14 { background: #00f2fe; color: black; transform: rotateY(180deg); }
+
+        /* 15. 液態泡泡按鈕 */
+        .btn-15 { padding: 12px 30px; border: none; background: #10b981; color: white; font-weight: bold; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; cursor: pointer; transition: all 0.4s ease-in-out; }
+        .btn-15:hover { border-radius: 50%; transform: rotate(5deg); }
+
+        /* 16. 高級磨砂毛玻璃 */
+        .glass-wrap-16 { background: linear-gradient(45deg, #ff007f, #00f2fe); padding: 25px; border-radius: 12px; width: 80%; display: flex; justify-content: center; }
+        .glass-16 { padding: 15px 30px; background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; color: #fff; font-weight: bold; text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+
+        /* 17. 骨架屏流體掃描 */
+        .skel-17 { width: 80%; height: 24px; background: rgba(255,255,255,0.05); border-radius: 6px; position: relative; overflow: hidden; }
+        .skel-17::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent); animation: shim17 1.5s infinite; }
+        @keyframes shim17 { 100% { transform: translateX(100%); } }
+
+        /* 18. 水滴融合成型 */
+        .fluid-wrap-18 { filter: blur(6px) contrast(12); background: #000; height: 80px; width: 100%; position: relative; }
+        .ball-18 { width: 35px; height: 35px; background: #fff; border-radius: 50%; position: absolute; top: 22px; left: 50%; }
+        .b1 { animation: mv18 3s infinite alternate ease-in-out; } .b2 { transform: translateX(-17px); }
+        @keyframes mv18 { 0% { transform: translateX(-40px); } 100% { transform: translateX(10px); } }
+
+        /* 19. 全息霓虹彩炫光 */
+        .card-19 { width: 110px; height: 160px; background: linear-gradient(115deg, #ff00c4, #ff007f, #00f2fe, #4facfe, #ff00c4); background-size: 400% 400%; border-radius: 12px; animation: holo19 4s ease infinite; }
+        @keyframes holo19 { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+        /* 20. 膠捲噪點質感 */
+        .noise-20 { width: 140px; height: 80px; background: #1a1a1a; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; overflow: hidden; font-weight: bold; position: relative; }
+        .noise-20::before { content: ''; position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='ns'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23ns)'/%3E%3C/svg%3E"); opacity: 0.12; pointer-events: none; }
+
+        /* 21. 金屬拉絲反光 */
+        .metal-21 { width: 140px; height: 50px; border-radius: 6px; background: linear-gradient(90deg, #444 0%, #999 25%, #ccc 50%, #999 75%, #444 100%); box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -1px 1px rgba(0,0,0,0.4), 0 4px 8px rgba(0,0,0,0.3); color: #111; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        /* 22. 內發光軟黏玉石 */
+        .jade-22 { width: 70px; height: 70px; background: #00ffcc; border-radius: 50%; box-shadow: inset 0 0 15px rgba(0,0,0,0.15), inset -8px -8px 25px rgba(0,0,0,0.4), 0 8px 20px rgba(0,255,204,0.25); }
+
+        /* 23. 摺紙幾何陰影 */
+        .fold-23 { width: 0; height: 0; border-top: 50px solid #3b82f6; border-right: 50px solid transparent; position: relative; }
+        .fold-23::after { content: ''; position: absolute; top: -50px; left: 0; width: 0; height: 0; border-bottom: 50px solid #1d4ed8; border-right: 50px solid transparent; opacity: 0.7; transform-origin: top left; transform: rotateX(180deg); }
+
+        /* 24. 暗色極簡切角 */
+        .clip-24 { width: 140px; height: 50px; background: #1f2937; color: #00f2fe; display: flex; align-items: center; justify-content: center; font-weight: bold; clip-path: polygon(0 0, 85% 0, 100% 30%, 100% 100%, 15% 100%, 0 70%); border: 1px solid #00f2fe; }
+
+        /* 25. 鏡面浮雕玻璃 */
+        .emboss-25 { padding: 15px 30px; background: rgba(255,255,255,0.02); border-radius: 12px; color: rgba(255,255,255,0.08); font-weight: 900; font-size: 1.4rem; border: 1px solid rgba(255,255,255,0.03); box-shadow: -5px -5px 15px rgba(255,255,255,0.01), 5px 5px 15px rgba(0,0,0,0.4), inset -2px -2px 5px rgba(0,0,0,0.4), inset 2px 2px 5px rgba(255,255,255,0.02); }
+
+        /* 26. 內隱網格背景 */
+        .grid-26 { width: 80%; height: 80px; background-size: 15px 15px; background-image: linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px); }
+
+        /* 27. 液體垂直滴落 */
+        .drop-27 { width: 16px; height: 16px; background: #00f2fe; border-radius: 50%; animation: drip27 2s infinite ease-in; }
+        @keyframes drip27 { 0% { transform: translateY(-30px); border-radius: 50%; } 45% { transform: translateY(10px) scaleX(0.8) scaleY(1.2); } 75% { transform: translateY(40px) scaleX(1); } 100% { transform: translateY(40px) scale(0); } }
+
+        /* 28. 無限脈衝同心圓 */
+        .ripple-28 { width: 35px; height: 35px; border: 2px solid #ff007f; border-radius: 50%; animation: rip28 2s infinite linear; position: relative; }
+        .ripple-28::before { content: ''; position: absolute; inset: -8px; border: 2px solid #ff007f; border-radius: 50%; opacity: 0.5; animation: rip28 2s infinite linear reverse; }
+        @keyframes rip28 { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.6); opacity: 0; } }
+
+        /* 29. 彩虹光譜色像差 */
+        .chroma-29 { padding: 12px 28px; background: #000; color: #fff; font-weight: bold; border-radius: 4px; border: 1px solid #333; box-shadow: -2px 0 #ff0000, 2px 0 #0000ff; animation: chrom29 0.3s infinite alternate; }
+        @keyframes chrom29 { 100% { box-shadow: -1px -2px #ff0000, 2px 1px #0000ff; } }
+
+        /* 30. 復古賽博網格線 */
+        .horizon-wrap-30 { perspective: 80px; overflow:hidden; height:100px; width: 100%; display:flex; justify-content:center; }
+        .horizon-30 { width: 200%; height: 200%; background-image: linear-gradient(rgba(255, 0, 127, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 127, 0.3) 1px, transparent 1px); background-size: 16px 16px; transform: rotateX(60deg) translateY(-40%); animation: hrz30 2s infinite linear; }
+        @keyframes hrz30 { 100% { background-position-y: 16px; } }
+
+        /* 31. 賽博朋克故障字 */
+        .glitch-31 { font-size: 2.2rem; font-weight: 900; color: #fff; position: relative; letter-spacing: 3px; }
+        .glitch-31::before, .glitch-31::after { content: 'GLITCH'; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #050508; }
+        .glitch-31::before { left: 2px; text-shadow: -2px 0 #ff007f; clip: rect(20px, 450px, 40px, 0); animation: gl31-1 4s infinite linear alternate-reverse; }
+        .glitch-31::after { left: -2px; text-shadow: -2px 0 #00f2fe; clip: rect(50px, 450px, 80px, 0); animation: gl31-2 4s infinite linear alternate-reverse; }
+        @keyframes gl31-1 { 0% { clip: rect(10px, 9999px, 30px, 0); } 100% { clip: rect(40px, 9999px, 70px, 0); } }
+        @keyframes gl31-2 { 0% { clip: rect(50px, 9999px, 85px, 0); } 100% { clip: rect(5px, 9999px, 35px, 0); } }
+
+        /* 32. 懸停文字分開遮罩 */
+        .split-32 { font-size: 2rem; font-weight: 800; color: transparent; position: relative; cursor: pointer; }
+        .split-32 span::before, .split-32 span::after { content: 'HOVER'; position: absolute; left: 0; width: 100%; overflow: hidden; color: #00f2fe; transition: transform 0.3s; }
+        .split-32 span::before { top: 0; height: 50%; transform-origin: top; }
+        .split-32 span::after { bottom: 0; height: 50%; transform-origin: bottom; display: flex; align-items: flex-end; }
+        .split-32:hover span::before { transform: rotateX(45deg); color: #ff007f; }
+        .split-32:hover span::after { transform: rotateX(-45deg); color: #ff007f; }
+
+        /* 33. 雷射描邊文字 */
+        .stroke-33 { font-size: 2.5rem; color: transparent; -webkit-text-stroke: 1px #fff; position: relative; cursor: default; }
+        .stroke-33::after { content: 'CORE'; position: absolute; inset: 0; color: #00f2fe; -webkit-text-stroke: 0px; width: 0; overflow: hidden; transition: width 0.5s; }
+        .stroke-33:hover::after { width: 100%; }
+
+        /* 34. 霓虹燈管閃爍故障 */
+        .flicker-34 { font-size: 2.2rem; color: #fff; text-shadow: 0 0 10px #ff007f, 0 0 20px #ff007f; animation: flick34 2.5s infinite; }
+        @keyframes flick34 { 0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; } 20%, 24%, 55% { opacity: 0.2; } }
+
+        /* 35. 煙霧感模糊消散 */
+        .smoke-35 { font-size: 2.2rem; color: #fff; transition: all 0.6s; cursor: pointer; letter-spacing: 1px; }
+        .smoke-35:hover { filter: blur(8px); opacity: 0; transform: translateY(-15px) scale(1.15); }
+
+        /* 36. 漸層動態文字 */
+        .grad-36 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(90deg, #ff007f, #00f2fe, #ff007f); background-size: 200%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: flow36 3s linear infinite; }
+        @keyframes flow36 { 100% { background-position: 200%; } }
+
+        /* 37. 3D 陰影厚度文字 */
+        .deep-37 { font-size: 2.5rem; font-weight: 900; color: #fff; text-shadow: 1px 1px #555, 2px 2px #555, 3px 3px #444, 4px 4px #333, 5px 5px 8px rgba(0,0,0,0.6); }
+
+        /* 38. 打字機閃爍游標 */
+        .type-38 { font-family: monospace; font-size: 1.4rem; white-space: nowrap; overflow: hidden; border-right: 3px solid #00f2fe; width: 6ch; animation: typ38 2.5s steps(6) infinite, blink38 0.5s infinite step-end alternate; }
+        @keyframes typ38 { 0%, 100% { width: 0 } 50% { width: 6ch } }
+        @keyframes blink38 { 50% { border-color: transparent } }
+
+        /* 39. 滑鼠懸停聚焦發光 */
+        .focus-39 { font-size: 2rem; color: rgba(255,255,255,0.15); filter: blur(3px); transition: all 0.4s; cursor: pointer; }
+        .focus-39:hover { color: #fff; filter: blur(0); text-shadow: 0 0 15px #00f2fe; }
+
+        /* 40. 雙層文字上下交錯滑動 */
+        .link-40 { font-size: 1.6rem; font-weight: bold; color: #fff; text-decoration: none; overflow: hidden; height: 2.2rem; display: block; position: relative; }
+        .link-40 span { display: block; transition: transform 0.3s; }
+        .link-40::after { content: 'NEXT'; position: absolute; top: 100%; left: 0; color: #ff007f; transition: transform 0.3s; }
+        .link-40:hover span { transform: translateY(-100%); } .link-40:hover::after { transform: translateY(-100%); }
+
+        /* 41. 雷達掃描光束 */
+        .radar-41 { width: 70px; height: 70px; border: 1px solid rgba(0,242,254,0.25); border-radius: 50%; background: linear-gradient(135deg, rgba(0,242,254,0.15) 0%, transparent 45%); animation: rotate03 2s infinite linear; }
+
+        /* 42. 無限迴圈DNA雙螺旋扭轉 */
+        .dna-wrap-42 { display: flex; gap: 8px; }
+        .dot-42 { width: 12px; height: 12px; background: #00f2fe; border-radius: 50%; animation: twist42 1.2s infinite ease-in-out; }
+        .d1 { animation-delay: -0.3s; } .d2 { animation-delay: -0.15s; background: #ff007f; } .d3 { animation-delay: 0s; }
+        @keyframes twist42 { 0%, 100% { transform: translateY(-15px); } 50% { transform: translateY(15px); } }
+
+        /* 43. 環形碎片加載圈 */
+        .spin-43 { width: 40px; height: 40px; border: 3px dashed #ff007f; border-top-color: transparent; border-radius: 50%; animation: rotate03 1s infinite linear; }
+
+        /* 44. 無限沙漏翻轉 */
+        .glass-44 { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 18px solid #fff; border-bottom: 18px solid #fff; animation: flip44 2s infinite ease; }
+        @keyframes flip44 { 0% { transform: rotate(0deg); } 50% { transform: rotate(180deg); } 100% { transform: rotate(180deg); } }
+
+        /* 45. 卡片懸停立體傾斜 */
+        .tilt-45 { width: 110px; height: 75px; background: #3b82f6; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; transition: transform 0.3s; cursor: pointer; }
+        .tilt-45:hover { transform: perspective(400px) rotateX(20deg) rotateY(-15deg); }
+
+        /* 46. 水波紋載入球 */
+        .liq-46 { width: 55px; height: 55px; background: #00f2fe; border-radius: 50%; position: relative; overflow: hidden; }
+        .liq-46::before { content: ''; position: absolute; width: 200%; height: 200%; background: rgba(5,5,8,0.85); top: -135%; left: -50%; border-radius: 42%; animation: rotate03 4s infinite linear; }
+
+        /* 47. 連續跳動進度點 */
+        .bdot-wrap-47 { display: flex; gap: 6px; }
+        .bdot-47 { width: 8px; height: 8px; background: #fff; border-radius: 50%; animation: bdot47 0.5s infinite alternate ease-in-out; }
+        @keyframes bdot47 { 100% { transform: translateY(-12px); } }
+
+        /* 48. 幾何方塊翻滾錯覺 */
+        .roll-48 { width: 28px; height: 28px; background: #ff007f; animation: roll48 1.5s infinite ease-in-out; }
+        @keyframes roll48 {
+            0% { transform: perspective(100px) rotateX(0deg) rotateY(0deg); }
+            50% { transform: perspective(100px) rotateX(-180deg) rotateY(0deg); }
+            100% { transform: perspective(100px) rotateX(-180deg) rotateY(-180deg); }
         }
 
-        .fx-info p {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
+        /* 49. 音頻等化器動態線 */
+        .audio-wrap-49 { display: flex; gap: 3px; align-items: flex-end; height: 35px; }
+        .bar-49 { width: 4px; height: 8px; background: #00f2fe; animation: bar49 0.5s infinite alternate ease-in-out; }
+        .ba { animation-duration: 0.4s; } .bb { animation-duration: 0.55s; } .bc { animation-duration: 0.35s; }
+        @keyframes bar49 { 100% { height: 30px; } }
 
-        /* ==========================================
-           核心特效庫 (你可以依此格式複製出 50 種)
-           ========================================== */
-
-        /* 特效 2: 賽博朋克流光按鈕 (Cyberpunk Glow Button) */
-        .btn-glow {
-            padding: 12px 28px;
-            border: none;
-            background: linear-gradient(135deg, var(--glow-secondary) 0%, var(--glow-color) 100%);
-            color: #000;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .btn-glow::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--glow-secondary) 0%, var(--glow-color) 100%);
-            filter: blur(15px);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: -1;
-            border-radius: 8px;
-        }
-
-        .btn-glow:hover {
-            transform: scale(1.05);
-        }
-
-        .btn-glow:hover::after {
-            opacity: 0.8;
-        }
-
-        /* 特效 3: 高級毛玻璃質感 (Glassmorphism) */
-        .glass-sphere {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            position: relative;
-        }
-        /* 後方裝飾球，用來突顯毛玻璃的模糊效果 */
-        .glass-bg-orb {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: coral;
-            border-radius: 50%;
-            z-index: -1;
-            transform: translate(-30px, -20px);
-            animation: float 4s ease-in-out infinite alternate;
-        }
-
-        /* 特效 4: 骨架屏閃爍載入 (Skeleton Wave) */
-        .skeleton-card {
-            width: 100%;
-            max-width: 200px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .skeleton-card::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            transform: translateX(-100%);
-            background: linear-gradient(
-                90deg,
-                transparent,
-                rgba(255, 255, 255, 0.08),
-                transparent
-            );
-            animation: shimmer 1.5s infinite;
-        }
-
-        /* --- 動畫 Keyframes --- */
-        @keyframes float {
-            0% { transform: translate(-30px, -20px); }
-            100% { transform: translate(-20px, -10px); }
-        }
-
-        @keyframes shimmer {
-            100% { transform: translateX(100%); }
-        }
+        /* 50. 極光漸層旋轉背景 */
+        .aurora-wrap-50 { overflow: hidden; border-radius: 8px; width: 160px; height: 90px; }
+        .aurora-50 { width: 100%; height: 100%; background: linear-gradient(45deg, #00223e, #1d976c, #753a88, #cc2b5e); background-size: 300% 300%; animation: aur50 5s infinite ease-in-out alternate; }
+        @keyframes aur50 { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 
     </style>
 </head>
@@ -212,57 +318,266 @@
 
     <header>
         <h1>CSS VISUAL FX LAB</h1>
-        <p>探索極致的網頁動畫、質感、光影與流體視覺回饋</p>
+        <p>頂級純 CSS 視覺特效聖典。內含 50 種微互動回饋、高階材質模擬、字體視覺特效與動態載入組件，專為網頁極致動效研發。</p>
     </header>
 
     <main class="gallery-grid">
 
-        <!-- 01. 霓虹流光按鈕 -->
+        <!-- 01 - 15 按鈕與互動回饋 -->
         <div class="fx-card">
-            <div class="fx-stage">
-                <button class="btn-glow">Hover Me</button>
-            </div>
-            <div class="fx-info">
-                <h3>01. Cyberpunk Glow</h3>
-                <p>利用虛擬元素與濾鏡模糊（blur）實現的霓虹環境光回饋。</p>
-            </div>
+            <div class="fx-stage"><button class="btn-01">NEON</button></div>
+            <div class="fx-info"><h3>01. Cyberpunk Glow</h3><p>虛擬元素與模糊濾鏡實現的霓虹環境光回饋。</p></div>
         </div>
 
-        <!-- 02. 高級毛玻璃質感 -->
         <div class="fx-card">
-            <div class="fx-stage">
-                <div class="glass-bg-orb"></div>
-                <div class="glass-sphere"></div>
-            </div>
-            <div class="fx-info">
-                <h3>02. Glassmorphism</h3>
-                <p>運用 backdrop-filter 實現的現代微透光磨砂玻璃質感。</p>
-            </div>
+            <div class="fx-stage"><button class="btn-02">JELLY</button></div>
+            <div class="fx-info"><h3>02. Jelly Fluid</h3><p>利用非線性三次貝茲曲線實現的果凍彈性形變。</p></div>
         </div>
 
-        <!-- 03. 骨架屏載入 -->
         <div class="fx-card">
-            <div class="fx-stage">
-                <div class="skeleton-card"></div>
-            </div>
-            <div class="fx-info">
-                <h3>03. Shimmer Skeleton</h3>
-                <p>利用線性漸層與位移動畫，創造極致流暢的加載流體反光。</p>
-            </div>
+            <div class="fx-stage"><div class="box-03"><span>BORDER</span></div></div>
+            <div class="fx-info"><h3>03. Conic Border Run</h3><p>錐形漸層色沿著圓角外框進行高速裁切旋轉。</p></div>
         </div>
 
-        <!-- 你可以複製下方這個空白模板，一路貼到 50 個 -->
-        <!-- 
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-04">FILL</button></div>
+            <div class="fx-info"><h3>04. Glow Fill</h3><p>側邊平滑推入色塊並轉化文字前景色。 </p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-05">PUSH ME</button></div>
+            <div class="fx-info"><h3>05. 3D Push Feedback</h3><p>陰影崩塌與位移模擬具有機械感的實體按壓。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="box-06"></div></div>
+            <div class="fx-info"><h3>06. Neumorphic Inset</h3><p>懸停時外部雙向陰影無縫切換為內部凹陷陰影。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-07">SHINE</button></div>
+            <div class="fx-info"><h3>07. Shimmer Shine</h3><p>超速斜向高光劃過物件表面，建立光澤感知。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-08">Double Split</button></div>
+            <div class="fx-info"><h3>08. Double Split</h3><p>雙向偽元素由兩側向中心閉合填滿背景。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-09">DRAW</button></div>
+            <div class="fx-info"><h3>09. Draw Border</h3><p>邊框線條沿著相對頂點順時針延展環繞。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="circle-10"></div></div>
+            <div class="fx-info"><h3>10. Pulse Wave</h3><p>無限向外擴散並逐漸淡化的聲波物理脈衝。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-11">ZOOM</button></div>
+            <div class="fx-info"><h3>11. Scale Inset</h3><p>滑鼠觸碰時產生磁吸式的向內縮小回饋。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-12">SHAKE</button></div>
+            <div class="fx-info"><h3>12. Wobble Shake</h3><p>多角度快速交替擺動，用於警告或吸睛提示。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-13">LAYERS</button></div>
+            <div class="fx-info"><h3>13. Layer Shadow</h3><p>位移時分離出多層高飽和度的色彩陰影。</p></div>
+        </div>
+
         <div class="fx-card">
             <div class="fx-stage">
-                這裡放你的 CSS 特效 HTML
+                <div class="card-14"><div class="inner-14"><div class="front-14">FRONT</div><div class="back-14">BACK</div></div></div>
             </div>
-            <div class="fx-info">
-                <h3>04. 特效名稱</h3>
-                <p>特效的簡短技術原理描述。</p>
-            </div>
-        </div> 
-        -->
+            <div class="fx-info"><h3>14. 3D Flip Card</h3><p>具備透視感與背面隱藏的立體翻轉回饋。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="btn-15">BLOB</button></div>
+            <div class="fx-info"><h3>15. Liquid Blob</h3><p>不規則圓角率動演變成完美正圓。 </p></div>
+        </div>
+
+        <!-- 16 - 30 材質與光影質感 -->
+        <div class="fx-card">
+            <div class="fx-stage"><div class="glass-wrap-16"><div class="glass-16">GLASS</div></div></div>
+            <div class="fx-info"><h3>16. Glassmorphism</h3><p>高質感磨砂毛玻璃，具備物理背景模糊效果。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="skel-17"></div></div>
+            <div class="fx-info"><h3>17. Skeleton Shimmer</h3><p>資料加載中的高流暢度漸層光束掃描。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="fluid-wrap-18"><div class="ball-18 b1"></div><div class="ball-18 b2"></div></div></div>
+            <div class="fx-info"><h3>18. Metaball Fluid</h3><p>利用高對比與模糊濾鏡實現的有機液態融合。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="card-19"></div></div>
+            <div class="fx-info"><h3>19. Holographic Card</h3><p>仿製卡片表面全息虹彩流轉的極光炫色。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="noise-20">NOISE</div></div>
+            <div class="fx-info"><h3>20. Static Noise</h3><p>利用 SVG 噪點圖像注入底層的高級膠捲顆粒感。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="metal-21">METAL</div></div>
+            <div class="fx-info"><h3>21. Brushed Metal</h3><p>多重線性漸層模擬強烈反光的拉絲金屬硬質。 </p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="jade-22"></div></div>
+            <div class="fx-info"><h3>22. Soft Jade Light</h3><p>內發光堆疊創造如玉石般的軟糯通透光澤。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="fold-23"></div></div>
+            <div class="fx-info"><h3>23. Origami Fold</h3><p>運用邊框厚度差與變形點建構的摺紙立體幾何。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="clip-24">TECH</div></div>
+            <div class="fx-info"><h3>24. Sci-fi Clipped</h3><p>科幻感的不規則幾何切角硬派外框。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="emboss-25">EMBOSS</div></div>
+            <div class="fx-info"><h3>25. Frosted Emboss</h3><p>鏡面浮雕質感，高難度暗部與亮部的雙向微陰影。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="grid-26"></div></div>
+            <div class="fx-info"><h3>26. Micro Grid Table</h3><p>純 CSS 線性漸層建構的超細科技感的背板網格線。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="drop-27"></div></div>
+            <div class="fx-info"><h3>27. Dripping Fluid</h3><p>模擬重力加速度落下的垂直水滴拉伸。 </p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="ripple-28"></div></div>
+            <div class="fx-info"><h3>28. Ripple Loop</h3><p>正反雙向交錯放大的無限脈衝同心圓。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><button class="grid-26 chroma-29">SPECTRUM</button></div>
+            <div class="fx-info"><h3>29. Chromatic Border</h3><p>高頻率極小位移產生的色彩紅藍分色色像差。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="horizon-wrap-30"><div class="horizon-30"></div></div></div>
+            <div class="fx-info"><h3>30. Outrun Horizon</h3><p>向遠方透視延伸並無限向上捲動的復古網格線。</p></div>
+        </div>
+
+        <!-- 31 - 40 字體與排版視覺 -->
+        <div class="fx-card">
+            <div class="fx-stage"><h2 class="glitch-31" data-text="GLITCH">GLITCH</h2></div>
+            <div class="fx-info"><h3>31. Glitch Text</h3><p>利用屬性複製與隨機裁切做出的電子數位故障字。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="split-32"><span>HOVER</span></div></div>
+            <div class="fx-info"><h3>32. Split Text Hover</h3><p>滑鼠懸停時文字從中線呈上下 3D 裂開。 </p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><h2 class="stroke-33">CORE</h2></div>
+            <div class="fx-info"><h3>33. Text Stroke Draw</h3><p>由空心文字逐漸往右填滿實心色彩的掃描效果。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><h2 class="flicker-34">LIGHTS</h2></div>
+            <div class="fx-info"><h3>34. Neon Flicker Text</h3><p>非對稱的隨機透明度抖動，模擬老舊霓虹燈管故障。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><h2 class="smoke-35">SMOKE</h2></div>
+            <div class="fx-info"><h3>35. Smoke Dissolve</h3><p>微幅放大與高度模糊，營造文字化作煙霧消散。 </p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><h2 class="grad-36">DYNAMIC</h2></div>
+            <div class="fx-info"><h3>36. Gradient Fluid Text</h3><p>文字主體遮罩與動態漸層背景橫向平移迴圈。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><h2 class="deep-37">3D TEXT</h2></div>
+            <div class="fx-info"><h3>37. 3D Deep Text</h3><p>利用等比位移的多層暗色陰影堆疊出實體厚度。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="type-38">CODE..</div></div>
+            <div class="fx-info"><h3>38. Typing Effect</h3><p>步進函數模擬文字逐字吐出與光標閃爍。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><span class="focus-39">FOCUS</span></div>
+            <div class="fx-info"><h3>39. Focus Text</h3><p>初始狀態高度模糊，懸停時瞬間收縮聚焦。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><a href="#" class="link-40" data-hover="NEXT"><span>LINK</span></a></div>
+            <div class="fx-info"><h3>40. Slide Text Link</h3><p>上下雙層文字交錯滑移，極致乾淨的超連結特效。</p></div>
+        </div>
+
+        <!-- 41 - 50 加載、轉場與微動態 -->
+        <div class="fx-card">
+            <div class="fx-stage"><div class="radar-41"></div></div>
+            <div class="fx-info"><h3>41. Radar Scanner</h3><p>圓錐漸層旋轉，模擬雷達雷射光束掃描線。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="dna-wrap-42"><div class="dot-42 d1"></div><div class="dot-42 d2"></div><div class="dot-42 d3"></div></div></div>
+            <div class="fx-info"><h3>42. DNA Twister</h3><p>相位差錯開的正弦波動，模擬雙螺旋扭轉錯覺。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="spin-43"></div></div>
+            <div class="fx-info"><h3>43. Dashed Spinner</h3><p>破裂斷點式虛線圓圈高速旋轉，極富科技感。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="glass-44"></div></div>
+            <div class="fx-info"><h3>44. Hourglass Flip</h3><p>幾何三角形立體翻滾，實現無限沙漏反轉進度。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="tilt-45">TILT</div></div>
+            <div class="fx-info"><h3>45. 3D Tilt Card</h3><p>透視矩陣旋轉，滑鼠移入卡片時產生頃斜面。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="liq-46"></div></div>
+            <div class="fx-info"><h3>46. Liquid Loader</h3><p>不規則方塊在圓形內旋轉，模擬液體晃動水平面。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="bdot-wrap-47"><div class="bdot-47"></div><div class="bdot-47" style="animation-delay:0.15s"></div><div class="bdot-47" style="animation-delay:0.3s"></div></div></div>
+            <div class="fx-info"><h3>47. Bouncing Dots</h3><p>三點依序彈跳進度條，高階電商、AI 對話常用動效。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="roll-48"></div></div>
+            <div class="fx-info"><h3>48. Box Rolling</h3><p>沿著 X 軸與 Y 軸交替滾動的 3D 空間方塊轉場。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="audio-wrap-49"><div class="bar-49 ba"></div><div class="bar-49 bb"></div><div class="bar-49 bc"></div></div></div>
+            <div class="fx-info"><h3>49. Audio Equilizer</h3><p>隨機速度的縱向高度跳變，模擬音頻聲波等化器。</p></div>
+        </div>
+
+        <div class="fx-card">
+            <div class="fx-stage"><div class="aurora-wrap-50"><div class="aurora-50"></div></div></div>
+            <div class="fx-info"><h3>50. Aurora Core</h3><p>四色漸層網格慢速漂移扭曲，形成極光背景質感。</p></div>
+        </div>
 
     </main>
 
